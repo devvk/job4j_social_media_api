@@ -183,12 +183,6 @@ mvn checkstyle:check
 - Запуск тестов
 - Проверка Checkstyle
 
-Бейдж статуса сборки:
-
-```md
-![Build](https://github.com/devvk/job4j_social_media_api/actions/workflows/maven.yml/badge.svg)
-```
-
 ## Документация API
 
 После запуска приложения Swagger будет доступен по адресу:
