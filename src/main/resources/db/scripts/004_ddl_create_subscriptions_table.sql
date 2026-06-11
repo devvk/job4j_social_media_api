@@ -1,7 +1,7 @@
 --liquibase formatted sql
 
---changeset devvk:004_ddl_create_subscribers_table
-CREATE TABLE subscribers
+--changeset devvk:004_ddl_create_subscriptions_table
+CREATE TABLE subscriptions
 (
     id            BIGSERIAL PRIMARY KEY,
     user_id       BIGINT    NOT NULL REFERENCES users (id) ON DELETE CASCADE,
@@ -11,4 +11,4 @@ CREATE TABLE subscribers
     CHECK (user_id <> subscriber_id)
 );
 
---rollback DROP TABLE subscribers;
+--rollback DROP TABLE subscriptions;

@@ -33,6 +33,7 @@ replay_pid*
 *.iml
 
 target
+out
 files
 src/main/resources/static/files
 

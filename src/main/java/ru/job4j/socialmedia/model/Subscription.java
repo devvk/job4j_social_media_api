@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "subscribers",
+@Table(name = "subscriptions",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"user_id", "subscriber_id"})
         }
 )
-public class Subscriber {
+public class Subscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

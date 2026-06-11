@@ -10,7 +10,7 @@ CREATE TABLE friend_requests
     created_at  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (sender_id, receiver_id),
     CHECK (sender_id <> receiver_id),
-    CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED'))
+    CHECK (status = 'PENDING' OR status = 'ACCEPTED' OR status = 'REJECTED')
 );
 
 --rollback DROP TABLE friend_requests;

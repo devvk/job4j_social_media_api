@@ -1,7 +1,7 @@
 --liquibase formatted sql
 
---changeset devvk:006_ddl_create_friends_table
-CREATE TABLE friends
+--changeset devvk:006_ddl_create_friendships_table
+CREATE TABLE friendships
 (
     id         BIGSERIAL PRIMARY KEY,
     user1_id   BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
@@ -11,4 +11,4 @@ CREATE TABLE friends
     CHECK (user1_id < user2_id)
 );
 
---rollback DROP TABLE friends;
+--rollback DROP TABLE friendships;
