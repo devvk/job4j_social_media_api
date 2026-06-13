@@ -1,0 +1,71 @@
+package ru.job4j.socialmedia.service;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.job4j.socialmedia.dto.PostRequestDto;
+import ru.job4j.socialmedia.dto.PostResponseDto;
+import ru.job4j.socialmedia.model.Post;
+import ru.job4j.socialmedia.model.PostImage;
+import ru.job4j.socialmedia.model.User;
+import ru.job4j.socialmedia.repository.PostRepository;
+import ru.job4j.socialmedia.repository.UserRepository;
+
+@Service
+@AllArgsConstructor
+public class PostService {
+
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+
+    @Transactional
+    public PostResponseDto create(Long userId, PostRequestDto dto) {
+        User author = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(
+                "User not found: " + userId));
+
+        Post post = new Post();
+        post.setTitle(dto.title());
+        post.setBody(dto.body());
+        post.setAuthor(author);
+
+        for (String imageUrl : dto.images()) {
+            PostImage postImage = new PostImage();
+            postImage.setPath(imageUrl);
+            postImage.setPost(post);
+            post.getImages().add(postImage);
+        }
+
+        Post savedPost = postRepository.save(post);
+        return PostResponseDto.from(savedPost);
+    }
+
+    @Transactional
+    public PostResponseDto update(Long postId, Long userId, PostRequestDto dto) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(
+                "Post not found: " + postId));
+
+        if (!post.getAuthor().getId().equals(userId)) {
+            throw new AccessDeniedException("You are not allowed to update this post");
+        }
+
+        post.setTitle(dto.title());
+        post.setBody(dto.body());
+        Post updatedPost = postRepository.save(post);
+
+        return PostResponseDto.from(updatedPost);
+    }
+
+    @Transactional
+    public void delete(Long postId, Long userId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException(
+                "Post not found: " + postId));
+
+        if (!post.getAuthor().getId().equals(userId)) {
+            throw new AccessDeniedException("You are not allowed to delete this post");
+        }
+
+        postRepository.delete(post);
+    }
+}
