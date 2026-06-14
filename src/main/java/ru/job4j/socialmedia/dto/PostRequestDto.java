@@ -14,4 +14,7 @@ public record PostRequestDto(
 
         List<String> images
 ) {
+    public PostRequestDto {
+        images = images == null ? List.of() : images;
+    }
 }

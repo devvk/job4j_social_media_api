@@ -1,5 +1,6 @@
 package ru.job4j.socialmedia.repository;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("username") String username,
             @Param("passwordHash") String passwordHash
     );
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }
