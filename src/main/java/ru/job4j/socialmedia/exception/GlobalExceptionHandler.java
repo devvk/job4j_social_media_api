@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation() {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("message", "User with this username or email already exists"));
     }
