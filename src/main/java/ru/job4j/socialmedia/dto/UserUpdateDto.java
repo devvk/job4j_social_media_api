@@ -4,6 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 
 public record UserUpdateDto(
 
+
+        @NotBlank(message = "username must not be blank")
+        String username,
+
         @NotBlank(message = "email must not be blank")
         String email,
 

@@ -30,14 +30,14 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> create(@RequestBody @Valid UserCreateDto userCreateDto) {
-        UserResponseDto userResponseDto = userService.create(userCreateDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+    public ResponseEntity<UserResponseDto> create(@RequestBody @Valid UserCreateDto dto) {
+        UserResponseDto user = userService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @PutMapping("/{id}")
-    public UserResponseDto update(@PathVariable Long id, @RequestBody @Valid UserUpdateDto userUpdateDto) {
-        return userService.update(id, userUpdateDto);
+    public UserResponseDto update(@PathVariable Long id, @RequestBody @Valid UserUpdateDto dto) {
+        return userService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
