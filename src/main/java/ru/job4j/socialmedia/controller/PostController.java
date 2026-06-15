@@ -35,7 +35,7 @@ public class PostController {
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .path("/api/posts/{id}")
+                .path("/{id}")
                 .buildAndExpand(post.id())
                 .toUri();
 

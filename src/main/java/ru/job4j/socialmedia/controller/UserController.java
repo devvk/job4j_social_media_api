@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.job4j.socialmedia.dto.UserCreateDto;
 import ru.job4j.socialmedia.dto.UserResponseDto;
 import ru.job4j.socialmedia.dto.UserUpdateDto;
 import ru.job4j.socialmedia.service.UserService;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -32,7 +34,14 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponseDto> create(@RequestBody @Valid UserCreateDto dto) {
         UserResponseDto user = userService.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/{id}")
+                .buildAndExpand(user.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(user);
     }
 
     @PutMapping("/{id}")
