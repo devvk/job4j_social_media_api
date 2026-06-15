@@ -18,8 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
-    Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
-
     @Modifying
     @Transactional
     @Query("""
