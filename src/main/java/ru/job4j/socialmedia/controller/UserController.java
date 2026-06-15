@@ -35,7 +35,7 @@ public class UserController {
         UserResponseDto user = userService.create(dto);
 
         URI uri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
+                .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(user.id())
                 .toUri();

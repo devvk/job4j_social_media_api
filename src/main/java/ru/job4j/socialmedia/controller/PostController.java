@@ -34,7 +34,7 @@ public class PostController {
         PostResponseDto post = postService.create(userId, dto);
 
         URI uri = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
+                .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(post.id())
                 .toUri();
