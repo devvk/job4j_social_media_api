@@ -1,5 +1,6 @@
 package ru.job4j.socialmedia.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record UserCreateDto(
@@ -8,6 +9,7 @@ public record UserCreateDto(
         String username,
 
         @NotBlank(message = "email must not be blank")
+        @Email(message = "email must be valid")
         String email,
 
         @NotBlank(message = "password must not be blank")
