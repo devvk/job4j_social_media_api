@@ -2,6 +2,7 @@ package ru.job4j.socialmedia.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.StreamSupport;
 
+@Log4j2
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -65,5 +67,12 @@ public class GlobalExceptionHandler {
                         ))
                         .toList()
         );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleException(Exception e) {
+        log.error("Unexpected error: {}", e.getClass().getSimpleName(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Internal server error"));
     }
 }
