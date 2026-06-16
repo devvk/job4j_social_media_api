@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.job4j.socialmedia.model.PostImage;
 
+import java.util.List;
+
 public interface PostImageRepository extends JpaRepository<PostImage, Long> {
 
     @Modifying
@@ -16,4 +18,6 @@ public interface PostImageRepository extends JpaRepository<PostImage, Long> {
             WHERE image.id = :imageId AND image.post.id = :postId
             """)
     int deleteByIdAndPostId(@Param("imageId") Long imageId, @Param("postId") Long postId);
+
+    List<PostImage> findAllByPostId(Long postId);
 }

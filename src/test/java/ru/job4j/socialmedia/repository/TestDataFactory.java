@@ -1,7 +1,9 @@
 package ru.job4j.socialmedia.repository;
 
+import ru.job4j.socialmedia.dto.PostRequestDto;
 import ru.job4j.socialmedia.model.*;
 
+import java.util.List;
 import java.util.UUID;
 
 public class TestDataFactory {
@@ -42,6 +44,11 @@ public class TestDataFactory {
         post.setBody(randomString());
         post.setAuthor(author);
         return post;
+    }
+
+    public static PostRequestDto createPostRequestDto() {
+        return new PostRequestDto(randomString(), randomString(),
+                List.of("image1.jpg", "image2.jpg"));
     }
 
     public static Message createMessage(User sender, User receiver) {
