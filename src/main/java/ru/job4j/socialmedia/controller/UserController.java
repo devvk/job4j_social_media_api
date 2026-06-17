@@ -1,5 +1,11 @@
 package ru.job4j.socialmedia.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -15,6 +21,7 @@ import ru.job4j.socialmedia.service.UserService;
 import java.net.URI;
 import java.util.List;
 
+@Tag(name = "UserController", description = "UserController management APIs")
 @Validated
 @RestController
 @AllArgsConstructor
@@ -23,6 +30,12 @@ public class UserController {
 
     private final UserService userService;
 
+    @Operation(summary = "Get user by id", description = "Returns one user by the specified id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User found", content = { @Content(schema = @Schema(implementation = UserResponseDto.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "400", description = "Invalid user id", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
+    })
     @GetMapping("/{id}")
     public UserResponseDto getUser(@PathVariable
                                    @Min(value = 1, message = "id must be greater than 0")
@@ -30,11 +43,18 @@ public class UserController {
         return userService.findById(id);
     }
 
+    @Operation(summary = "Get all users", description = "Returns a list of all registered users.")
+    @ApiResponse(responseCode = "200", description = "Users found", content = { @Content(schema = @Schema(implementation = UserResponseDto.class), mediaType = "application/json") })
     @GetMapping
     public List<UserResponseDto> getAll() {
         return userService.findAll();
     }
 
+    @Operation(summary = "Create user", description = "Creates a new user and returns the created user with Location header.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "User created", content = { @Content(schema = @Schema(implementation = UserResponseDto.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(schema = @Schema()))
+    })
     @PostMapping
     public ResponseEntity<UserResponseDto> create(@RequestBody @Valid UserCreateDto dto) {
         UserResponseDto user = userService.create(dto);
@@ -48,6 +68,12 @@ public class UserController {
         return ResponseEntity.created(uri).body(user);
     }
 
+    @Operation(summary = "Update user", description = "Updates an existing user by the specified id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User updated", content = { @Content(schema = @Schema(implementation = UserResponseDto.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "400", description = "Invalid request data or user id", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
+    })
     @PutMapping("/{id}")
     public UserResponseDto update(@PathVariable
                                   @Min(value = 1, message = "id must be greater than 0")
@@ -56,6 +82,12 @@ public class UserController {
         return userService.update(id, dto);
     }
 
+    @Operation(summary = "Delete user", description = "Deletes an existing user by the specified id.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "User deleted", content = { @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "400", description = "Invalid user id", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable
                                        @Min(value = 1, message = "id must be greater than 0")
