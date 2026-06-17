@@ -46,4 +46,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             ORDER BY post.createdAt DESC
             """)
     Page<Post> findAllSubscriberPostsByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    List<Post> findByAuthorIdIn(List<Long> userIds);
 }

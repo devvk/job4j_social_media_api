@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.job4j.socialmedia.dto.PostRequestDto;
 import ru.job4j.socialmedia.dto.PostResponseDto;
+import ru.job4j.socialmedia.dto.UserPostsResponseDto;
 import ru.job4j.socialmedia.model.Post;
 import ru.job4j.socialmedia.model.PostImage;
 import ru.job4j.socialmedia.model.User;
@@ -14,6 +15,8 @@ import ru.job4j.socialmedia.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -83,5 +86,25 @@ public class PostService {
 //        }
 
         postRepository.delete(post);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserPostsResponseDto> findPostsByUsers(List<Long> userIds) {
+        List<User> users = userRepository.findAllById(userIds);
+        List<Post> posts = postRepository.findByAuthorIdIn(userIds);
+
+        Map<Long, List<PostResponseDto>> postsByUserId = posts.stream()
+                .collect(Collectors.groupingBy(
+                        post -> post.getAuthor().getId(),
+                        Collectors.mapping(PostResponseDto::from, Collectors.toList())
+                ));
+
+        return users.stream()
+                .map(user -> new UserPostsResponseDto(
+                        user.getId(),
+                        user.getUsername(),
+                        postsByUserId.getOrDefault(user.getId(), List.of())
+                ))
+                .toList();
     }
 }

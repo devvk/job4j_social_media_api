@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.job4j.socialmedia.dto.PostRequestDto;
 import ru.job4j.socialmedia.dto.PostResponseDto;
+import ru.job4j.socialmedia.dto.UserPostsResponseDto;
 import ru.job4j.socialmedia.model.User;
 import ru.job4j.socialmedia.repository.PostImageRepository;
 import ru.job4j.socialmedia.repository.PostRepository;
@@ -106,5 +107,43 @@ class PostServiceTest {
 
         assertThat(postRepository.findById(response.id())).isEmpty();
         assertThat(postImageRepository.findAllByPostId(response.id())).isEmpty();
+    }
+
+    @Test
+    void whenGetPostsByUsersThenReturnAllPostsGroupedByUser() {
+        User user1 = userRepository.save(TestDataFactory.createUser());
+        User user2 = userRepository.save(TestDataFactory.createUser());
+        PostRequestDto user1Post1 = TestDataFactory.createPostRequestDto();
+        PostRequestDto user1Post2 = TestDataFactory.createPostRequestDto();
+        PostRequestDto user2Post1 = TestDataFactory.createPostRequestDto();
+        postService.create(user1.getId(), user1Post1);
+        postService.create(user1.getId(), user1Post2);
+        postService.create(user2.getId(), user2Post1);
+
+        List<UserPostsResponseDto> result = postService.findPostsByUsers(List.of(user1.getId(), user2.getId()));
+
+        assertThat(result).hasSize(2);
+
+        UserPostsResponseDto user1Posts = result.stream()
+                .filter(dto -> dto.userId().equals(user1.getId()))
+                .findFirst()
+                .orElseThrow();
+
+        UserPostsResponseDto user2Posts = result.stream()
+                .filter(dto -> dto.userId().equals(user2.getId()))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(user1Posts.username()).isEqualTo(user1.getUsername());
+        assertThat(user1Posts.posts()).hasSize(2);
+        assertThat(user1Posts.posts())
+                .extracting(PostResponseDto::title)
+                .containsExactlyInAnyOrder(user1Post1.title(), user1Post2.title());
+
+        assertThat(user2Posts.username()).isEqualTo(user2.getUsername());
+        assertThat(user2Posts.posts()).hasSize(1);
+        assertThat(user2Posts.posts())
+                .extracting(PostResponseDto::title)
+                .containsExactly(user2Post1.title());
     }
 }
