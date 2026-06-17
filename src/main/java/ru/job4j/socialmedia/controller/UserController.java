@@ -1,8 +1,10 @@
 package ru.job4j.socialmedia.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.job4j.socialmedia.dto.UserCreateDto;
@@ -13,6 +15,7 @@ import ru.job4j.socialmedia.service.UserService;
 import java.net.URI;
 import java.util.List;
 
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
@@ -21,7 +24,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public UserResponseDto getUser(@PathVariable Long id) {
+    public UserResponseDto getUser(@PathVariable
+                                   @Min(value = 1, message = "id must be greater than 0")
+                                   Long id) {
         return userService.findById(id);
     }
 
@@ -44,12 +49,17 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserResponseDto update(@PathVariable Long id, @RequestBody @Valid UserUpdateDto dto) {
+    public UserResponseDto update(@PathVariable
+                                  @Min(value = 1, message = "id must be greater than 0")
+                                  Long id,
+                                  @RequestBody @Valid UserUpdateDto dto) {
         return userService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable
+                                       @Min(value = 1, message = "id must be greater than 0")
+                                       Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
