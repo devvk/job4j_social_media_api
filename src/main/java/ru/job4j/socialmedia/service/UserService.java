@@ -7,7 +7,7 @@ import ru.job4j.socialmedia.dto.UserCreateDto;
 import ru.job4j.socialmedia.dto.UserResponseDto;
 import ru.job4j.socialmedia.dto.UserUpdateDto;
 import ru.job4j.socialmedia.exception.EmailAlreadyExistsException;
-import ru.job4j.socialmedia.exception.LoginAlreadyExistsException;
+import ru.job4j.socialmedia.exception.UserAlreadyExistsException;
 import ru.job4j.socialmedia.exception.UserNotFoundException;
 import ru.job4j.socialmedia.model.User;
 import ru.job4j.socialmedia.repository.UserRepository;
@@ -39,7 +39,7 @@ public class UserService {
     @Transactional
     public UserResponseDto create(UserCreateDto dto) {
         if (userRepository.existsByUsername(dto.username())) {
-            throw new LoginAlreadyExistsException(dto.username());
+            throw new UserAlreadyExistsException(dto.username());
         }
 
         User user = new User();

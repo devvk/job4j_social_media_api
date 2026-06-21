@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -36,6 +37,7 @@ public class PostController {
             @ApiResponse(responseCode = "400", description = "Invalid post id", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "Post not found", content = { @Content(schema = @Schema()) })
     })
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public PostResponseDto getPost(@PathVariable
                                    @Min(value = 1, message = "id must be greater than 0")
@@ -45,6 +47,7 @@ public class PostController {
 
     @Operation(summary = "Get all posts", description = "Returns a list of all posts.")
     @ApiResponse(responseCode = "200", description = "Posts found", content = { @Content(schema = @Schema(implementation = PostResponseDto.class), mediaType = "application/json") })
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping
     public List<PostResponseDto> getAll() {
         return postService.findAll();
@@ -56,6 +59,7 @@ public class PostController {
             @ApiResponse(responseCode = "400", description = "Invalid request data or user id", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
     })
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/{userId}")
     public ResponseEntity<PostResponseDto> create(@PathVariable
                                                   @Min(value = 1, message = "userId must be greater than 0")
@@ -78,6 +82,7 @@ public class PostController {
             @ApiResponse(responseCode = "400", description = "Invalid request data or post id", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "Post not found", content = { @Content(schema = @Schema()) })
     })
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PutMapping("/{id}")
     public PostResponseDto update(@PathVariable
                                   @Min(value = 1, message = "id must be greater than 0")
@@ -92,6 +97,7 @@ public class PostController {
             @ApiResponse(responseCode = "400", description = "Invalid post id", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "Post not found", content = { @Content(schema = @Schema()) })
     })
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable
                                        @Min(value = 1, message = "id must be greater than 0")
@@ -105,8 +111,9 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "Posts found", content = { @Content(schema = @Schema(implementation = UserPostsResponseDto.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", description = "Invalid user ids", content = @Content(schema = @Schema()))
     })
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/by-users")
-    List<UserPostsResponseDto> getPostsByUsers(
+    public List<UserPostsResponseDto> getPostsByUsers(
             @RequestParam List<@Min(value = 1, message = "userId must be greater than 0") Long> userIds) {
         return postService.findPostsByUsers(userIds);
     }

@@ -13,7 +13,7 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
-public class OpenAPIConfig {
+public class SwaggerConfig {
 
     @Value("${socialmedia.openapi.dev-url}")
     private String devUrl;
@@ -39,7 +39,7 @@ public class OpenAPIConfig {
         License mitLicense = new License().name("MIT License").url("https://choosealicense.com/licenses/mit/");
 
         Info info = new Info()
-                .title("SocialMedia Management API")
+                .title("SocialMedia API")
                 .version("1.0")
                 .contact(contact)
                 .description("This API exposes endpoints to manage project.").termsOfService("https://mydomen.com")

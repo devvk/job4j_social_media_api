@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -36,6 +37,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user id", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
     })
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public UserResponseDto getUser(@PathVariable
                                    @Min(value = 1, message = "id must be greater than 0")
@@ -45,6 +47,7 @@ public class UserController {
 
     @Operation(summary = "Get all users", description = "Returns a list of all registered users.")
     @ApiResponse(responseCode = "200", description = "Users found", content = { @Content(schema = @Schema(implementation = UserResponseDto.class), mediaType = "application/json") })
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping
     public List<UserResponseDto> getAll() {
         return userService.findAll();
@@ -55,6 +58,7 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "User created", content = { @Content(schema = @Schema(implementation = UserResponseDto.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(schema = @Schema()))
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UserResponseDto> create(@RequestBody @Valid UserCreateDto dto) {
         UserResponseDto user = userService.create(dto);
@@ -74,6 +78,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid request data or user id", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public UserResponseDto update(@PathVariable
                                   @Min(value = 1, message = "id must be greater than 0")
@@ -88,6 +93,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user id", content = @Content(schema = @Schema())),
             @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable
                                        @Min(value = 1, message = "id must be greater than 0")

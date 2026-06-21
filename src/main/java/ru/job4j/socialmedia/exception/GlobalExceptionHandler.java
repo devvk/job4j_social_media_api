@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({LoginAlreadyExistsException.class, EmailAlreadyExistsException.class})
+    @ExceptionHandler({UserAlreadyExistsException.class, EmailAlreadyExistsException.class})
     public ResponseEntity<Map<String, String>> handleUserAlreadyExists(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("message", e.getMessage()));
